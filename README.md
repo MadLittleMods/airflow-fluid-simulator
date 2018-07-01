@@ -12,6 +12,15 @@ Good for:
 If you want to use this, probably best to clone this locally and start adjusting the image and configuration there instead of using the live version.
 
 
+## [Live demo](https://madlittlemods.github.io/airflow-fluid-simulator/)
+
+See the live demo, https://madlittlemods.github.io/airflow-fluid-simulator/
+
+Example:
+
+![](https://i.imgur.com/LEhAWXy.gif)
+
+
 ## FAQ
 
 ### How do I adjust the background image/picture?
