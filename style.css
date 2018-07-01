@@ -1,0 +1,19 @@
+
+html,body {
+	margin:5px;
+	padding:0px;
+
+	font-family: "Arial", sans-serif;
+}
+
+
+
+#fluid_container {
+	display:inline-block;
+	margin:4px;
+	border:1px solid #333;
+}
+
+.primary-button {
+
+}

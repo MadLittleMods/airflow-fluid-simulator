@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Airflow fluid simulator</title>
+
+	<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h1>
+	<a href="https://github.com/MadLittleMods/airflow-fluid-simulator">
+		Airflow fluid simulator
+	</a>
+</h1>
+
+<p>
+	Source: <a href="https://github.com/MadLittleMods/airflow-fluid-simulator">https://github.com/MadLittleMods/airflow-fluid-simulator</a>
+</p>
+
+<p>
+	Based off of <a href="http://neuroid.co.uk/lab/fluid/">Javascript 2D Fluid / Turbulence Sim</a> by Dean Alex
+</p>
+
+<hr>
+
+<p>
+	The vector-field is persisted to local storage in the browser (refresh at will).
+	<button class="primary-button js-clear-persisted-vector-field">
+		Clear persisted vector field
+	</button>
+</p>
+<p>
+	You can also download and save your creation
+	<button class="primary-button js-download">
+		Download
+	</button>
+	or import a previously saved field
+	<input type="file" class="js-import">
+</p>
+
+<p>
+	If you want to use your own background image, adjust the vector-field resolution, or create a gif animation see the <a href="https://github.com/MadLittleMods/airflow-fluid-simulator#faq">readme FAQ</a>
+</p>
+
+<div id="fluid_container"></div>
+
+
+<section>
+<h3>
+	Controls
+</h3>
+
+	Scroll wheel to change the comb size
+	<br>
+	<label for="form-vector-comb-magnitude-input">Vector Comb Magnitude:</label>
+	<input type="range" min="0" max="20" value="5" class="js-vector-comb-magnitude-input" id="form-vector-comb-magnitude-input">
+	<label for="form-vector-comb-magnitude-input" class="js-vector-comb-magnitude-label-value">5</label>
+
+	<br>
+	<br>
+
+	<button class="primary-button js-reset-velocities">Reset velocities</button><br>
+	<br>
+
+	<input type="checkbox" class="js-show-vectory-field" checked>Show vector field<br>
+	<br>
+	<input type="checkbox" class="js-frame-dragging-checkbox">Frame dragging<br>
+
+	<br>
+	<br>
+	<br>
+	<br>
+</section>
+
+
+
+<script type="text/javascript" src="fluid.js"></script>
+<script type="text/javascript">
+
+	// via https://stackoverflow.com/a/18197341/796832
+	function download(filename, text) {
+		const element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		element.setAttribute('download', filename);
+
+		element.style.display = 'none';
+		document.body.appendChild(element);
+
+		element.click();
+
+		document.body.removeChild(element);
+	}
+
+	const downloadVectorFieldButton = document.querySelector('.js-download');
+	downloadVectorFieldButton.addEventListener('click', () => {
+		download('vector-field.json', JSON.stringify(fluid.fetchVectorFieldData()));
+	});
+
+	const importVectorFieldButton = document.querySelector('.js-import');
+	importVectorFieldButton.addEventListener('change', (e) => {
+		var file = e.target.files[0];
+
+		var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (e) => {
+			fluid.persistVectorFieldData(e.target.result);
+			fluid.initVectorField();
+		}
+
+    reader.readAsText(file);
+	});
+
+	const resetVelocityButton = document.querySelector('.js-reset-velocities');
+	resetVelocityButton.addEventListener('click', () => {
+		fluid.resetVelocity();
+		fluid.persistVectorFieldData();
+	});
+
+	const clearPersistedVectorFieldButton = document.querySelector('.js-clear-persisted-vector-field');
+	clearPersistedVectorFieldButton.addEventListener('click', () => {
+		fluid.clearVectorFieldData();
+	});
+
+	const showVectorFieldCheckbox = document.querySelector('.js-show-vectory-field');
+	showVectorFieldCheckbox.addEventListener('change', () => {
+		fluid.showVectorField = showVectorFieldCheckbox.matches(':checked');
+	});
+
+	const frameDraggingCheckbox = document.querySelector('.js-frame-dragging-checkbox');
+	frameDraggingCheckbox.addEventListener('change', () => {
+		fluid.enableFrameDragging = frameDraggingCheckbox.matches(':checked');
+	});
+
+
+	const vectorCombMagnitudeInput = document.querySelector('.js-vector-comb-magnitude-input');
+	const vectorCombMagnitudeLabelInput = document.querySelector('.js-vector-comb-magnitude-label-value');
+	const onVectorMagnitudeInputChange = () => {
+		vectorCombMagnitudeLabelInput.innerHTML = parseFloat(vectorCombMagnitudeInput.value);
+		fluid.vectorCombMagnitude = parseFloat(vectorCombMagnitudeInput.value);
+	};
+	vectorCombMagnitudeInput.addEventListener('input', onVectorMagnitudeInputChange);
+	vectorCombMagnitudeInput.addEventListener('change', onVectorMagnitudeInputChange);
+
+	fluid.init();
+</script>
+
+</body>
+</html>
